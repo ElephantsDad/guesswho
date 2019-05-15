@@ -1,0 +1,309 @@
+{% extends "layout.html" %}
+{% block content %}
+<script>
+   function start_timer(){
+      var now = new Date().getTime();
+      var fiveMinutesLater = new Date();
+      var fiveMinutesLater = new Date(now + (5 * 60 * 1000 + 1000));
+      var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = fiveMinutesLater - now;
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          if (seconds < 10) {
+             document.getElementById("timer").innerHTML = minutes + ":0" + seconds;
+          }
+          else {
+             document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+          };
+          if (distance < 0) {
+             clearInterval(x);
+             document.getElementById("timer").innerHTML = "0:00";
+             $('#myModal').modal('show');
+          }
+      }, 1000);
+   }
+   function guess() {
+      let location = $('#select_location').val();
+      if (location == '{{ location.name }}' ) {
+         socket.emit('endofgame', {'result':'Шпион победил!'})
+      }
+      else {
+         socket.emit('endofgame', {'result':'Победили нешпионы!'});
+      };
+   };
+   function spy(){
+      let spy = $('#select_spy').val();
+      if (spy == '{{ spy.username }}' ) {
+         socket.emit('endofgame', {'result':'Победили нешпионы!'})
+      }
+      else {
+         socket.emit('endofgame', {'result':'Шпион победил!'});
+      };
+   };
+</script>
+<div class="row">
+   <!-- Начало левой колонки -->
+   <div class="col-md-4 float-left">
+      <!-- Локация -->
+      <div class="row form-group">
+         <div class="col-md-4 imback_height locback p-1">
+            <div class="row">
+               <div class="col-md-12 imback_height_half">
+                  <div class="text-center white-text-big pt-5" style="text-decoration: underline">
+                        <b>Локация:</b>
+                  </div>
+                  <div class="text-center white-text">
+                     {% if current_user.isspy == 1 %}
+                        Неизвестно
+                     {% else %}
+                        {{ location.name }}
+                     {% endif %}
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12 imback_height_half">
+                  <div class="text-center white-text-big pt-5" style="text-decoration: underline">
+                        <b>Роль:</b>
+                  </div>
+                  <div class="text-center white-text">
+                     {% if current_user.isspy == 1 %}
+                        Шпион
+                     {% else %}
+                        Нешпион
+                     {% endif %}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-md-8 imback_height imback align-items-center rounded-right d-flex justify-content-center pt-2 pb-2">
+            {% if current_user.isspy == 1 %}
+               <img src="{{ url_for('static', filename='spy.jpg') }}" alt="" class="img-fluid img-thumbnail">
+            {% else %}
+               <img src="{{ url_for('static', filename=location.image_file) }}" alt="" class="img-fluid img-thumbnail">
+            {% endif %}
+         </div>
+      </div>
+         <!-- Часики -->
+         <div class="row">
+            <div id="timer" class="col-md-12 timmer text-center p-3">
+               <script>
+                  let s_time = {{ start }}
+                     if (s_time == 3){
+                        start_timer();
+                  };
+               </script>
+            </div>
+         </div>
+         <!-- Модальное окно КОНЕЦ -->
+         <div class="modal fade" id="endmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title about-text text-center" id="myModalLabel">Игра окончена</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                     </button>
+                  </div>
+                  <div id="endofgame" class="modal-body text-center">
+
+                  </div>
+                  <div class="modal-footer">
+                     <a href="#" onclick="leave_room();" class="btn btn-primary btn-lg">Выйти</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+                        <!-- Кнопка голосовать/угадать локацию -->
+            {% if current_user.isspy == 1 %}
+               <!-- Кнопка УГАДАТЬ ЛОКАЦИЮ -->
+               <div class="row">
+                  <div class="col-md-12 center-block">
+                     <!-- Button trigger modal -->
+                     <div class="form-group">
+                        <div class="d-flex justify-content-center py-1">
+                           <button type="button" class="btn btn-primary  btn-lg" data-toggle="modal" data-target="#exampleModal">
+                              Угадать локацию
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <!-- Модальное окно -->
+               <div  class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <h5 class="modal-title about-text" id="exampleModalLabel">Где мы?</h5>
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                           </button>
+                        </div>
+                        <div class="modal-body">
+                           <select id='select_location'>
+                              <option>Деревня</option>
+                              <option>Маяк</option>
+                              <option>Затерянный остров</option>
+                              <option>Встреча алкоголиков</option>
+                              <option>Улица</option>
+                              <option>Парк аттракционов</option>
+                              <option>Космос</option>
+                              <option>Гримерка</option>
+                              <option>Цирк</option>
+                           </select>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" onclick="guess();" class="btn btn-secondary" data-dismiss="modal">Принять</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            {% else %}
+            <div class="row">
+               <div class="col-md-12 center-block">
+                  <!-- Button trigger modal -->
+                  <div class="form-group">
+                     <div class="d-flex justify-content-center py-1">
+                        <button type="button" class="btn btn-primary  btn-lg" data-toggle="modal" data-target="#exampleModal">
+                           Угадать шпиона
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- Модальное окно УГАДАТЬ ШПИОНА -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title about-text text-center" id="exampleModalLabel">Кто шпион?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                           <span aria-hidden="true">&times;</span>
+                        </button>
+                     </div>
+                     <div class="modal-body">
+                        <select id='select_spy'>
+                           {% for user in room_obj.users %}
+                              {% if user.id != current_user.id %}
+                                 <option> {{ user.username }}</option>
+                              {% endif %}
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" onclick="spy();" class="btn btn-secondary" data-dismiss="modal">Принять</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {% endif %}
+         <!-- Кнопка выйти -->
+         <div class="row justify-content-center py-1">
+            <a href="#" onclick="leave_room();" class="btn btn-primary btn-lg">Выйти</a>
+         </div>
+      </div>
+      <!-- Конец левой колонки -->
+      <!-- Начало правой колонки -->
+      <div class="col-md-8">
+         <!-- Игроки -->
+         <div class="row mt-1">
+            <div class="col text-center titles">
+               Игроки:
+            </div>
+         </div>
+         <div class="row mt-4" id='user_list'>
+            {% for user in room_obj.users %}
+               {% if user.id != current_user.id %}
+                  <div class="col text-center titles_2">
+                     {{ user.username }}
+                     <img src="{{ url_for('static', filename='circle1.png') }}" class="mx-auto d-block">
+                  </div>
+               {% endif %}
+            {% endfor %}
+         </div>
+         <!-- Чат -->
+         <div class="container mt-5 mb-5 pl-5 pr-5 text-left">
+            <article class="media p-2 rounded" style="background: #ffffff">
+               <textarea id="chat" cols="80" rows="20"  class="message-area media-content" readonly contenteditable="false"></textarea>
+            </article>
+            <div class="row mt-2 mb-2 p-1">
+                  {{ form.hidden_tag() }}
+                  <div class="col-md-10">
+                     {{ form.message(class="form-control form-control-sm", id="text") }}
+                  </div>
+                  <div class="col-md-2">
+                     {{ form.submit(class="btn btn-default btn-sm", id="message-sbtn") }}
+                  </div>
+            </div>
+         </div>
+      </div>
+      <!-- Конец правой колонки -->
+
+<div>
+   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+   crossorigin="anonymous"></script>
+   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+   <script type="text/javascript" charset="utf-8">
+      var socket;
+         $(document).ready(function(){
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/game');
+            socket.on('connect', function() {
+               socket.emit('joined', {});
+               socket.emit('add_user', {});
+            });
+            socket.on('status', function(data) {
+               $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+               $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+            socket.on('message', function(data) {
+               $('#chat').val($('#chat').val() + data.msg + '\n');
+               $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+
+            socket.on('player', function(data) {
+               if (data.count == 3){
+                  start_timer()
+               }
+               $('#chat').val($('#chat').val() + data.msg + '\n');
+               $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+
+            socket.on('new_user', function(data) {
+               let N = data.msg;
+               let user_template = `<div class="col text-center titles_2">
+                                       ${N}
+                                       <img src="{{ url_for('static', filename='circle1.png') }}" class="mx-auto d-block">
+                                    </div>
+                                    `;
+               $('#user_list').append(user_template);
+               $('#select_spy').append(`<option> ${N} </option>`)
+            });
+
+
+            socket.on('endofgame', function(data) {
+               $('#chat').val($('#chat').val() + data.result + '\n');
+               $('#chat').scrollTop($('#chat')[0].scrollHeight);
+            });
+
+            $('#text').keypress(function(e) {
+               var code = e.keyCode || e.which;
+               if (code == 13) {
+                  text = $('#text').val();
+                  $('#text').val('');
+                  socket.emit('text', {msg: text});
+               }
+            });
+         });
+         function leave_room() {
+            socket.emit('left', {}, function() {
+               socket.disconnect();
+                  // go back to the login page
+               window.location.href = "{{ url_for('index') }}";
+            });
+
+         }
+   </script>
+    <body>
+    </body>
+{% endblock content %}

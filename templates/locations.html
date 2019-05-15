@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+   <div class="text-nowrap text-center game_title">Локации</div>
+   <div class="row">
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='location_1.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text  text-center pb-3">
+               Гримерка
+         </div>
+         <img src="{{ url_for('static', filename='location_2.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-3">
+               Космос
+         </div>
+         <img src="{{ url_for('static', filename='location_3.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-5">
+               Маяк
+         </div>
+      </div>
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='location_4.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-3">
+              Затерянный остров
+         </div>
+         <img src="{{ url_for('static', filename='location_5.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-3">
+               Парк аттракционов
+         </div>
+         <img src="{{ url_for('static', filename='location_6.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-5">
+               Улица
+         </div>
+      </div>
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='location_7.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-3">
+               Деревня
+         </div>
+         <img src="{{ url_for('static', filename='location_8.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-3">
+               Встреча алкоголиков
+         </div>
+         <img src="{{ url_for('static', filename='location_9.jpg') }}" alt="" class="img-fluid multiple-borders rounded">
+         <div class="main-text text-center pb-5">
+               Цирк
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %}

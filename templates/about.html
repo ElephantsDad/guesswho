@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+   <div class="text-nowrap text-center game_title">О разработчиках</div>
+   <div class="row">
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='m.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
+         <div class="about-text  text-center pt-2">
+            <a href="https://vk.com/doc_160197926" target="_blank">Marianna</a>
+         </div>
+         <div class="rules-text text-center pt-2">
+               - разработчик -
+         </div>
+         <div class="row">
+            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
+            <div class="rules-text text-center pl-4 pt-3">
+                  elephantsdadshusband@gmail.com
+            </div>
+         </div>
+      </div>
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='d.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
+         <div class="about-text  text-center pt-2">
+            <a href="https://vk.com/whatthehelldaria" target="_blank">Daria</a>
+         </div>
+         <div class="rules-text text-center pt-2">
+               - иллюстратор -
+         </div>
+         <div class="row">
+            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
+            <div class="rules-text text-center mx-5 mt-3">
+                  daria_demidenko9@mail.com
+            </div>
+         </div>
+
+      </div>
+      <div class="col-sm">
+         <img src="{{ url_for('static', filename='a.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
+         <div class="about-text  text-center pt-2">
+            <a href="https://vk.com/phenyk" target="_blank">Albina</a>
+         </div>
+         <div class="rules-text text-center pt-2">
+               - разработчик -
+         </div>
+         <div class="row">
+            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
+            <div class="rules-text text-center mx-5 mt-3">
+                  albina.kufarova@mail.com
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %}

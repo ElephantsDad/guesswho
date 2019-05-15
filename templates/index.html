@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+   <div class="row">
+      <div class="col-md-2 p-0"></div>
+      <div class="col-md-8">
+         <div class="text-nowrap text-center game_title">Добро пожаловать в <b>Guess Who</b></div>
+         <div class="text-center main-text mt-3 pl-5 pr-5">
+               Включайте свое красноречие и сообразительность, в этой игре Вам помогут только они!<br>
+               Семь игроков и только один — шпион. Сможете ли Вы найти его за 8 минут?
+               А притвориться "своим" и угадать локацию, на которой все находятся?
+               Если Вы обычный человек, задавайте другим игрокам вопросы, связанные с локацией, чтобы вычислить шпиона.
+               А если вы шпион — внимательно следите за ответами игроков, чтобы угадать локацию.
+         </div>
+         <div class="small-text mt-3">
+            Сначала ознакомьтесь с <a href="{{ url_for('rules') }}" target="_blank">правилами</a> игры
+         </div>
+         <div class="mt-4 text-center">
+            <form  method="POST">
+               {{ form.hidden_tag() }}
+               <!-- Поле "никнейм" -->
+               <fieldset class="form-group text-center">
+                  <div class="text-center form-row justify-content-center">
+                     {{ form.name.label(class="form-control-label col-md-2 main-text text-left small-text") }}
+                     {% if form.name.errors %}
+                        {{ form.name(class="form-control form-control-sm col-md-2 is-invalid") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.name.errors %}
+                              <span>{{ error }}</span>
+                           {% endfor %}
+                        </div>
+                     {% else %}
+                        {{ form.name(class="form-control form-control-sm  col-md-2", id="username-in") }}
+                     {% endif %}
+                  </div>
+                  <!-- Комната -->
+                  <!--<div class="text-center form-row justify-content-center">
+                     {{ form.room.label(class="form-control-label col-md-2 main-text text-left small-text") }}
+                     {% if form.room.errors %}
+                        {{ form.room(class="form-control form-control-sm col-md-2 is-invalid") }}
+                        <div class="invalid-feedback">
+                           {% for error in form.room.errors %}
+                              <span>{{ error }}</span>
+                           {% endfor %}
+                        </div>
+                     {% else %}
+                        {{ form.room(class="form-control form-control-sm  col-md-2") }}
+                     {% endif %}
+                  </div> -->
+               </fieldset>
+               {{ form.submit(class="btn btn-default btn-lg col-md-3", id="username-sbtn") }}
+            </form>
+         </div>
+      </div>
+      <div class="col-md-2 p-0"></div>
+   </div>
+{% endblock content %}
