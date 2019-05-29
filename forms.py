@@ -1,6 +1,6 @@
 from flask_wtf import Form
-from wtforms.fields import StringField, SubmitField
-from wtforms.validators import Required, Length
+from wtforms.fields import StringField, SubmitField, TextAreaField
+from wtforms.validators import Required, Length, Email
 
 
 class LoginForm(Form):
@@ -11,4 +11,11 @@ class LoginForm(Form):
 
 class SendMessageForm(Form):
     message = StringField('Сообщение:', validators=[Required(),Length(max=200)])
+    submit = SubmitField('Отправить')
+
+class ContactForm(Form):
+    name = StringField('Имя', validators=[Required(),Length(min=2, max=30)])
+    email = StringField('Email', validators=[Required(), Email()])
+    subject = StringField('Тема', validators=[Required()])
+    message = TextAreaField('Сообщение', validators=[Required(),Length(min=10, max=1000)])
     submit = SubmitField('Отправить')

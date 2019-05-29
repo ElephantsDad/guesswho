@@ -1,58 +1,67 @@
 {% extends "layout.html" %}
 {% block content %}
+<script>
+function sh(div){
+   document.getElementById("div1").style.display = "none";
+   document.getElementById("div2").style.display = "none";
+   document.getElementById("div3").style.display = "none";
+   document.getElementById("div4").style.display = "none";
+   document.getElementById("div5").style.display = "none";
+   document.getElementById(div).style.display = 'block';
+};
+</script>
+
 <div class="row">
-   <div class="col-md-1">
-      <!--<img src="{{ url_for('static', filename='локация.png') }}" alt="" class="img-fluid">-->
-   </div>
-   <div class="col-md-10">
-      <div class="text-nowrap text-center game_title">Правила игры</div>
-      <div class="rules-text mt-3 pl-5 pr-5">
-         На время игры участники оказываются в определенной локации, и лишь один из них (шпион) не знает, где находится.
-      </div>
-      <div class="main-text text-center mt-3">
-         <u>Цель игры</u>
-         <div class="row">
-            <div class="col">
-               <div class="rules-text mt-3 pl-5 pr-5">
-                  <p class="font-weight-bold">Для шпиона: </p>
-                  оставаться нераскрытым до окончания раунда или угадать локацию, в которой все находятся.
-               </div>
-            </div>
-            <div class="col">
-               <div class="rules-text mt-3 pl-5 pr-5">
-                  <p class="font-weight-bold">Для нешпионов: </p>
-                  путем общего голосования выбрать шпиона, тем самым разоблачив его, и не раскрыть локацию.
-               </div>
-            </div>
+   <div class="col-md-3 text-center">
+         <div class="titles_2">Ход игры</div>
+         <div class="row justify-content-center py-1">
+            <input type="button" class="btn btn-default btn-lg col-md-7" value="Как играть" onmousedown="sh('div1')">
          </div>
-      </div>
-      <div class="main-text text-center mt-3">
-         <u>Конец игрового раунда</u>
-         <div class="row">
-            <div class="col">
-               <div class="rules-text mt-3 pl-5 pr-5">
-                  <p class="font-weight-bold">Шпион раскрыл локацию </p>
-                  В любой момент игры (кроме голосования) шпион может нажать на кнопку «Угадать локацию». Таймер останавливается, и все игроки оповещаются, что шпион пытается угадать локацию. Для игроков управление в этот момент недоступно. Перед шпионом появляется список всех локаций, из которых он должен выбрать текущую. Если локация угадана – игра заканчивается победой шпиона, если нет – игра заканчивается победой нешпионов.
-               </div>
-            </div>
-            <div class="col">
-               <div class="rules-text mt-3 pl-5 pr-5">
-                  <p class="font-weight-bold">Закончилось время </p>
-                  Если время игрового раунда закончилось, а шпион так и не был отгадан, то он считается победителем данной игры.
-               </div>
-               <img src="{{ url_for('static', filename='spy.jpg') }}" alt="" class="img-fluid pt-3 rounded-circle">
-            </div>
-            <div class="col">
-               <div class="rules-text mt-3 pl-5 pr-5  pb-5">
-                  <p class="font-weight-bold">Шпион раскрыт </p>
-                  Нешпионы могут угадать шпиона. Для этого любой игрок в любой момент игры может нажать на кнопку «Голосовать», таймер останавливается, появляется окно, в котором инициатор голосования выбирает игрока-шпиона. Далее остальные игроки могут проголосовать «за» или «против». Если все игроки «за» – карта подозреваемого вскрывается, если он не был шпионом, то он исключается из игры (не может задавать вопросы/отвечать на них и голосовать, но может наблюдать) и игра продолжается. Если это был шпион, игра заканчивается победой нешпионов. В голосование шпион не участвует. Так же он не может угадывать локацию в это время.
-               </div>
-            </div>
+         <div class="row justify-content-center py-1">
+            <input type="button" class="btn btn-default btn-lg col-md-7" value="Цели игроков" onmousedown="sh('div2')">
          </div>
-      </div>
+         <div class="titles_2">Конец игры</div>
+         <div class="row justify-content-center py-1">
+            <input type="button" class="btn btn-default btn-lg col-md-7" value="Закончилось время" onmousedown="sh('div3')">
+         </div>
+         <div class="row justify-content-center py-1">
+            <input type="button" class="btn btn-default btn-lg col-md-7" value="Раскрытие шпиона" onmousedown="sh('div4')">
+         </div>
+         <div class="row justify-content-center py-1">
+            <input type="button" class="btn btn-default btn-lg col-md-7" value="Раскрытие локации" onmousedown="sh('div5')">
+         </div>
    </div>
-   <div class="col-md-1">
-      <!--<img src="{{ url_for('static', filename='локация.png') }}" alt="" class="img-fluid">-->
+   <div id="div1" class="col-md-7 main-text" style="display:block; line-height: 1.3;">
+      <div class="titles_2 py-1"> Как играть</div>
+      <p>Добро пожаловать в "Guess Who"! При нажатии на кнопку "Начать игру", Вы попадаете в игровую комнату, где помимо
+      вас находится еще два игрока. Каждый получет роль: "шпион" или "нешпион". В каждой комнате только один шпион.
+      В течении игры Вы можете задавать вопросы в чате другим игрокам, чтобы выполнить цель Вашего персонажа (См. раздел "Цели игроков").</p>
+      <p>В течении игры каждый нешпион может отдать свой голос за предполагаемого шпиона. Для этого в любой момент игры нужно
+      нажать на кнопку «Голосовать» под именем игрока, которого Вы считаете шпионом. Голосовать можно один раз за игру.</p>
+      <p>Если Вы - шпион, то в течении игры Вы можете один раз попытаться угадать локацию.</p>
+      <p>Игра может закончится тремя разными исходами (См. раздел "Конец игры"). Вы можете закончить игру в любой момент,
+      нажав кнопку "Выйти".</p>
+   </div>
+   <div id="div2" class="col-md-7 main-text" style="display:none; line-height: 1.3;">
+      <div class="titles_2 py-1"> Цели игроков </div>
+      <p><b>Для шпиона:</b> оставаться нераскрытым до окончания раунда или угадать локацию, в которой все находятся.</p>
+      <p><b>Для нешпионов:</b> путем голосования выбрать шпиона, тем самым разоблачив его, и не раскрыть локацию.</p>
+   </div>
+   <div id="div3" class="col-md-7 main-text" style="display:none; line-height: 1.3;">
+      <div class="titles_2 py-1"> Конец игры: закончилось время </div>
+      Если время игрового раунда закончилось, а шпион так и <b>не был отгадан</b>, то он считается <b>победителем</b> данной игры.
+   </div>
+   <div id="div4" class="col-md-7 main-text" style="display:none; line-height: 1.3;">
+      <div class="titles_2 py-1"> Конец игры: раскрытие шпиона </div>
+      В любой момент игры нешпион может попытаться угадать шпиона (См. раздел "Как играть").<br>
+      Голос каждого нешпиона учитывается и если к концу раунда большинство голосов получил настоящий шпион, то игра заканчивается <b>победой нешпионов</b>.<br>
+      <p>Если же большинство голосов было отдано за нешпиона, то игра заканчивается <b>победой шпиона</b>.</p>
+   </div>
+   <div id="div5" class="col-md-7 main-text" style="display:none; line-height: 1.3;">
+      <div class="titles_2 py-1"> Конец игры: раскрытие локации</div>
+      В любой момент игры шпион может попытаться угадать локацию (См. раздел "Как играть").<br>
+      Если предположение шпиона оказалось <b>верно</b>, то игра заканчивается <b>победой шпиона</b>.<br>
+      <p>Если предположение <b>неверно</b>, то игра заканчивается <b>победой нешпионов</b>.</p>
    </div>
 </div>
 {% endblock content %}

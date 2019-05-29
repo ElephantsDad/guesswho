@@ -6,51 +6,45 @@
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
       <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-
       {% if title %}
          <title>Guess Who - {{ title }}</title>
       {% else %}
          <title>Guess Who</title>
       {% endif %}
    </head>
-
    <body>
       <header class="site-header">
          <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-             <div class="container">
+            <div class="container">
                <a class="navbar-brand mr-4" href="/">Главная</a>
                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                 <span class="navbar-toggler-icon"></span>
+                  <span class="navbar-toggler-icon"></span>
                </button>
                <div class="collapse navbar-collapse" id="navbarToggle">
-                 <div class="navbar-nav mr-auto">
-                   <a class="nav-item nav-link" href="{{ url_for('rules') }}"  target="_blank">Правила игры</a>
-                   <a class="nav-item nav-link" href="{{ url_for('locations') }}"  target="_blank">Список локаций</a>
-                 </div>
-                 <!-- Navbar Right Side -->
-                 <div class="navbar-nav">
-                   <a class="nav-item nav-link" href="{{ url_for('about') }}"  target="_blank">О разработчиках</a>
-                 </div>
+                  <div class="navbar-nav mr-auto">
+                     <a class="nav-item nav-link" href="{{ url_for('rules') }}"  target="_blank">Правила игры</a>
+                     <a class="nav-item nav-link" href="{{ url_for('locations') }}"  target="_blank">Список локаций</a>
+                  </div>
+                  <!-- Navbar Right Side -->
+                  <div class="navbar-nav">
+                     <a class="nav-item nav-link" href="{{ url_for('about') }}"  target="_blank">О разработчиках</a>
+                  </div>
                </div>
-             </div>
+            </div>
          </nav>
       </header>
-
-
       <main role="main" class="container-fluid">
          {% block content %}{% endblock %}
       </main>
       <div id="footer" class="bg-steel">
          <div class="footer-text">
-         MDA ©
-         2019
+            Guess Who ©
+            2019
          </div>
       </div>
 
       <!-- Подключение bootstrap (jQuery first, then Popper.js, then Bootstrap JS) -->
-
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
    </body>
 </html>

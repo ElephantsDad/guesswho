@@ -1,52 +1,135 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
-   <div class="text-nowrap text-center game_title">О разработчиках</div>
    <div class="row">
-      <div class="col-sm">
-         <img src="{{ url_for('static', filename='m.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
-         <div class="about-text  text-center pt-2">
-            <a href="https://vk.com/doc_160197926" target="_blank">Marianna</a>
+      <!-- ЛЕВАЯ КОЛОНКА -->
+      <div class="col-6">
+         <div class="text-nowrap text-center game_title "> Создатели сайта </div>
+         <div class="text-center about-text"> - разработчики - </div>
+         <div class="row mb-4 pt-4">
+            <div class="text-center col-5">
+               <div class="row">
+                  <div class="col-6">
+                     <img src="{{ url_for('static', filename='m.jpg') }}" alt="" class="img-fluid rounded-circle mini-img">
+                  </div>
+                  <div class="col-6 text-center">
+                     <div class="about-text text-center pt-4">
+                        <a href="https://vk.com/doc_160197926" target="_blank">Марианна</a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-2"></div>
+            <div class="text-center col-5">
+               <div class="row">
+                  <div class="col-6">
+                     <img src="{{ url_for('static', filename='a.jpg') }}" alt="" class="img-fluid rounded-circle mini-img">
+                  </div>
+                  <div class="col-6 text-center">
+                     <div class="about-text text-center pt-4">
+                        <a href="https://vk.com/phenyk" target="_blank">Альбина</a>
+                     </div>
+                  </div>
+               </div>
+            </div>
          </div>
-         <div class="rules-text text-center pt-2">
-               - разработчик -
-         </div>
-         <div class="row">
-            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
-            <div class="rules-text text-center pl-4 pt-3">
-                  elephantsdadshusband@gmail.com
+         <div class="text-center about-text"> - художник - </div>
+         <div class="row mb-4 pt-4">
+            <div class="text-center col-5">
+               <div class="row">
+                  <div class="col-6">
+                     <img src="{{ url_for('static', filename='d.jpg') }}" alt="" class="img-fluid rounded-circle mini-img">
+                  </div>
+                  <div class="col-6 text-center">
+                     <div class="about-text text-center pt-4">
+                        <a href="https://vk.com/whatthehelldaria" target="_blank">Дарья</a>
+                     </div>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
-      <div class="col-sm">
-         <img src="{{ url_for('static', filename='d.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
-         <div class="about-text  text-center pt-2">
-            <a href="https://vk.com/whatthehelldaria" target="_blank">Daria</a>
-         </div>
-         <div class="rules-text text-center pt-2">
-               - иллюстратор -
-         </div>
-         <div class="row">
-            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
-            <div class="rules-text text-center mx-5 mt-3">
-                  daria_demidenko9@mail.com
-            </div>
-         </div>
-
-      </div>
-      <div class="col-sm">
-         <img src="{{ url_for('static', filename='a.jpg') }}" alt="" class="img-fluid px-5 rounded-circle py-3">
-         <div class="about-text  text-center pt-2">
-            <a href="https://vk.com/phenyk" target="_blank">Albina</a>
-         </div>
-         <div class="rules-text text-center pt-2">
-               - разработчик -
-         </div>
-         <div class="row">
-            <img src="{{ url_for('static', filename='email.png') }}" alt="" class="img-fluid py-3">
-            <div class="rules-text text-center mx-5 mt-3">
-                  albina.kufarova@mail.com
-            </div>
+      <!-- ПРАВАЯ КОЛОНКА -->
+      <div class="col-1"> </div>
+      <div class="col-5">
+         <div class="text-nowrap text-center game_title "> Свяжитесь с нами </div>
+         <div class="text-nowrap game_title">
+            <form action="{{ url_for('about') }}" method="post">
+               {{ form.hidden_tag() }}
+               <fieldset class="form-group">
+                  <div class="row m-2">
+                     <div class="col-4">
+                        <div class=""> {{ form.name.label(class="main-text")  }} </div>
+                     </div>
+                     <div class="col-8">
+                        {% if form.name.errors %}
+                           <div class="">{{ form.name(class="form-control form-control-sm bottom is-invalid") }} </div>
+                           <div class="bad_feedback">
+                              {% for error in form.name.errors %}
+                                 <div>{{ error }}</div>
+                              {% endfor %}
+                           </div>
+                        {% else %}
+                           <div class="">{{ form.name(class="form-control form-control-sm bottom") }} </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="row m-2">
+                     <div class="col-4">
+                        <div class=""> {{ form.email.label(class="main-text")  }} </div>
+                     </div>
+                     <div class="col-8">
+                        {% if form.email.errors %}
+                           <div class="">{{ form.email(class="form-control form-control-sm bottom is-invalid") }} </div>
+                           <div class="bad_feedback">
+                              {% for error in form.email.errors %}
+                                 <span>{{ error }}</span>
+                              {% endfor %}
+                           </div>
+                        {% else %}
+                           <div class="">{{ form.email(class="form-control form-control-sm bottom") }} </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="row m-2">
+                     <div class="col-4">
+                        <div class=""> {{ form.subject.label(class="main-text")  }} </div>
+                     </div>
+                     <div class="col-8">
+                        {% if form.subject.errors %}
+                           <div class="">{{ form.subject(class="form-control form-control-sm bottom is-invalid") }} </div>
+                           <div class="bad_feedback">
+                              {% for error in form.subject.errors %}
+                                 <span>{{ error }}</span>
+                              {% endfor %}
+                           </div>
+                        {% else %}
+                           <div class="">{{ form.subject(class="form-control form-control-sm bottom") }} </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="row m-2">
+                     <div class="col-4">
+                        <div class=""> {{ form.message.label(class="main-text")  }} </div>
+                     </div>
+                     <div class="col-8">
+                        {% if form.message.errors %}
+                           <div class="">{{ form.message(class="form-control form-control-sm bottom is-invalid") }} </div>
+                           <div class="bad_feedback">
+                              {% for error in form.message.errors %}
+                                 <span>{{ error }}</span>
+                              {% endfor %}
+                           </div>
+                        {% else %}
+                           <div class="">{{ form.message(class="form-control form-control-sm bottom") }} </div>
+                        {% endif %}
+                     </div>
+                  </div>
+               </fieldset>
+               <div class="text-center">
+                  {{ form.submit(class="btn btn-default btn-lg col-md-3", id="username-sbtn") }}
+               </div>
+            </form>
          </div>
       </div>
    </div>

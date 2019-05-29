@@ -1,11 +1,12 @@
 #C:\Users\Asus\Projects\Environments\flasksocketiochat\Scripts\activate.bat
-#cd C:\Users\Asus\MDA
+#cd C:\Users\Asus\guesswho
 from flask import Flask
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
-from forms import LoginForm, SendMessageForm
+from flask_mail import Mail, Message
+from forms import LoginForm, SendMessageForm, ContactForm
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
 import uuid
@@ -15,10 +16,18 @@ app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'gjr39dkjn344_!67#'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = 'guesswhospy2019@gmail.com'
+app.config["MAIL_PASSWORD"] = '111password111'
+app.config["MAIL_DEFAULT_SENDER"] = 'guesswhospy2019@gmail.com'
+
 
 socketio = SocketIO(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
+mail = Mail(app)
 
 N = 3
 
@@ -28,6 +37,7 @@ class User(db.Model):
     session_id = db.Column(db.String(200), nullable=False)
     isready = db.Column(db.Integer, default='0')
     isspy = db.Column(db.Integer, default='0')
+    votes = db.Column(db.Integer, default='0')
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
 
     def __repr__(self):
@@ -113,7 +123,6 @@ def index():
                 a_room.status = 'closed'
                 db.session.commit()
         room = session.get('room')
-        emit('player', {'count':count}, room=room, namespace='/game')
         session['start'] = count
         RandomSpy(a_room, new_user)
         db.session.commit()
@@ -131,9 +140,24 @@ def rules():
 def locations():
     return render_template('locations.html', title="Локации")
 
-@app.route('/about')
+@app.route('/about', methods=['GET', 'POST'])
 def about():
-    return render_template('about.html', title="О разработчиках")
+    form = ContactForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            print(form.name.data, 'message was sent')
+            msg = Message(form.subject.data, recipients=['bigmeawmeawarmy@gmail.com'])
+            msg.body = """
+            От: %s <%s>
+            %s
+            """ % (form.name.data, form.email.data, form.message.data)
+            mail.send(msg)
+            return redirect(url_for('about'))
+        else:
+            print('error')
+            return render_template('about.html', title="О разработчиках", form=form)
+    elif request.method == 'GET':
+        return render_template('about.html', title="О разработчиках", form=form)
 
 @app.route('/game')
 def game():
@@ -158,28 +182,29 @@ def game():
 
 @socketio.on('joined', namespace='/game')
 def joined(message):
-    """Sent by clients when they enter a room.
-    A status message is broadcast to all people in the room."""
+    """Отправляется клиентом, когда он заходит в комнату.
+    Статус отправляется всем пользователям в комнате."""
     room = session.get('room')
     join_room(room)
-    emit('status', {'msg': session.get('name') + ' присоединился/ась к игре ' + session.get('room') + ' Время: ' + session.get('time')}, room=room)
+    emit('status', {'msg': session.get('name') + ' присоединился/ась к игре '}, room=room)
 
 @socketio.on('add_user', namespace='/game')
 def add_user(message):
+    """ Обновляет список игроков у всех в комнате """
     room = session.get('room')
     emit('new_user', {'msg': session.get('name')}, room=room)
 
 @socketio.on('text', namespace='/game')
 def text(message):
-    """Sent by a client when the user entered a new message.
-    The message is sent to all people in the room."""
+    """Отправялется клиентом, когда он отправляет сообщение
+    Сообщение отправляется всем пользователям в комнате"""
     room = session.get('room')
     emit('message', {'msg': session.get('name') + ': ' + message['msg']}, room=room)
 
 @socketio.on('left', namespace='/game')
 def left(message):
-    """Sent by clients when they leave a room.
-    A status message is broadcast to all people in the room."""
+    """Отправялется клиентом, когда он покидает комнату
+    Статус отправляется всем пользователям в комнате."""
     room = session.get('room')
     leave_room(room)
     emit('status', {'msg': session.get('name') + ' покинул/а чат.'}, room=room)
@@ -195,23 +220,66 @@ def test_disconnect():
     leaving_user = db.session.query(User).filter_by(room_id=room_id, username=name).first()
     db.session.query(User).filter_by(id=leaving_user.id).delete()
     db.session.commit()
+    print('Client was deleted from database')
     count = 0
     for user in room_obj.users:
         count += 1
     if count == 0:
         db.session.query(Rooms).filter_by(id=room_obj.id).delete()
         db.session.commit()
-    print('Client was deleted from database')
+        print('Room was deleted from database')
+
+@socketio.on('vote', namespace='/game')
+def voteHandler(ballot):
+    room = session.get('room', '')
+    print(ballot)
+    room_obj = db.session.query(Rooms).filter_by(s_id=room).first()
+    room_id = room_obj.id
+    user = db.session.query(User).filter_by(room_id=room_id, id=ballot).first()
+    user.votes = user.votes + 1
+    u = ['','','']
+    v = ['','','']
+    i = 0
+    for us in room_obj.users:
+        u[i] = us.username
+        v[i] = str(us.votes)
+        i += 1
+    result_1 = u[0] + ' - ' + v[0]
+    result_2 = u[1] + ' - ' + v[1]
+    result_3 = u[2] + ' - ' + v[2]
+    print(user.votes)
+    db.session.commit()
+    emit('vote', {'result_1' : result_1, 'result_2' : result_2, 'result_3' : result_3}, broadcast=True, room=room)
+
 
 @socketio.on('endofgame', namespace='/game')
 def endofgame(result):
     room = session.get('room', '')
-    emit('endofgame', result , broadcast=True, room=room)
+    room_obj = db.session.query(Rooms).filter_by(s_id=room).first()
+    room_id = room_obj.id
+    max_vote = db.session.query(db.func.max(User.votes)).filter_by(room_id=room_id).scalar()
+    users = db.session.query(User).filter_by(votes=max_vote).count()
+    victim = db.session.query(User).filter_by(votes=max_vote).first()
+    spy = db.session.query(User).filter_by(room_id=room_id, isspy=1).first()
+    if users > 1:
+        result = 'Победил шпион!'
+    elif spy.id == victim.id:
+        result = 'Победили нешпионы!'
+    else:
+        result = 'Победил шпион!'
+    print(max_vote)
+    emit('endofgame', {'result': result} , broadcast=True, room=room)
+
+@socketio.on('locationguess', namespace='/game')
+def locationguess(result):
+    room = session.get('room', '')
+    emit('locationguess', result , broadcast=True, room=room)
+
+@socketio.on('gamestarted', namespace='/game')
+def gamestarted():
+    room = session.get('room', '')
+    count = session.get('start', '')
+    emit('player', {'count':count }, room=room, namespace='/game')
 
 if __name__ == '__main__':
     socketio.run(app)
-
-
-#from run import db
-#db.create_all()
-#from run import User, Rooms, Location, chats
